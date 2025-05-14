@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora IPv4</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Calculadora de IPv4</h1>
+        
+        <form method="POST" class="fade-in">
+            <div class="form-group">
+                <label for="ip">Dirección IP:</label>
+                <input type="text" id="ip" name="ip" placeholder="Ej: 192.168.1.1" 
+                       value="{{ original_ip if original_ip else '' }}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="mask">Máscara de red:</label>
+                <input type="text" id="mask" name="mask" placeholder="Ej: 24 o 255.255.255.0" 
+                       value="{{ original_mask if original_mask else '' }}" required>
+            </div>
+            
+            <button type="submit">Calcular</button>
+        </form>
+        
+        {% if error %}
+            <div class="error fade-in">{{ error }}</div>
+        {% endif %}
+        
+        {% if network_ip %}
+        <div class="results fade-in">
+            <h2>Resultados</h2>
+            <table>
+                <tr>
+                    <th>Dirección IP ingresada:</th>
+                    <td>{{ original_ip }}/{{ original_mask }}</td>
+                </tr>
+                <tr>
+                    <th>IP de red:</th>
+                    <td>{{ network_ip }}</td>
+                </tr>
+                <tr>
+                    <th>IP de Broadcast:</th>
+                    <td>{{ broadcast_ip }}</td>
+                </tr>
+                <tr>
+                    <th>Cantidad de IPs útiles:</th>
+                    <td>{{ usable_ips }}</td>
+                </tr>
+                <tr>
+                    <th>Rango de IPs útiles:</th>
+                    <td>
+                        {% if first_usable and last_usable %}
+                            {{ first_usable }} - {{ last_usable }}
+                        {% else %}
+                            No hay IPs utilizables en esta red
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Clase de IP:</th>
+                    <td>{{ ip_class }}</td>
+                </tr>
+                <tr>
+                    <th>Tipo de IP:</th>
+                    <td>{{ private_public }}</td>
+                </tr>
+            </table>
+        </div>
+
+        {% if binary_colored %}
+        <div class="results fade-in">
+            <h2>BINARIO</h2>
+            <div class="highlight tooltip">
+                {{ binary_colored | safe }}
+                <span class="tooltiptext">Bits de red y host en binario</span>
+            </div>
+            <div>
+                <span class="legend red">red</span>
+                <span class="legend green">host</span>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
